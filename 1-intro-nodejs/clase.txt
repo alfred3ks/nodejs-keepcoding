@@ -1,0 +1,154 @@
+Vamos a ver la primera clase de NodeJS.
+Tutor: Javier Miguel, @javiermiguelg
+
+Veremos nodejs + express + mongodb. Tenemos una carpeta doc, donde esta el PDF de la presentación.
+
+Que es NodeJS:
+
+- Es un interprete de JavaScript. Motor V8 del navegador de JS sacado para ser ejecutado en el servidor.
+- Inicialmente diseñado para correr en servidores.
+- Asincrono, trabajo muy comodo.
+- Orientado a eventos. El usuario o los programas cliente son quienes definen el flujo.
+- No necesitamos Tomcat, IIS, etc.
+- Tampoco necesitamos un servidor web Apache, nginx, etc.
+- Nuestra aplicación realiza todas las funciones de un servidor.
+
+NodeJS utiliza para interpretar JS el Motor V8:
+- Motor JavaScript creado por Google para Chrome.
+- Escrito en C++.
+- Multiplataforma(win,Mac,Linux).
+
+Versiones que podemos encontrar de NodeJS:
+- Vamos a la web:
+https://nodejs.org/es/
+
+Para nodejs tenemos que ver los tipos de versiones que tenemos, vemos que al entrar en la página nos propone, una LTS y una Actual. la LTS son versiones recomendadas para la mayoría, ya que son las versiones que tiene mayor soporte. Las versiones Actual, es la última versión. Tambien debemos saber que las versiones inpares son versiones inestables.
+
+Si vamos a trabajar para una app seria lo mejor es hacerlo con uns LTS. Tenemos que tomar en cuenta el tiempo de desarrollo de la aplicación y luego el tiempo de despliegue de la aplicación. Para pruebas podemos usar la Actual.
+
+Podemos ver la agenda para las versiones LTS:
+
+https://github.com/nodejs/release#release-schedule
+
+NodeJS se ejecuta el código en un solo hilo, pero podemos crear hilos en funcion de las necesidades, pero cada hilo se autolimita a 1gb. Aunque si necesitamos aumentar es limite de memoria lo podriamos hacer, pero no es muy común.
+
+Ventajas de NodeJS:
+- Aplicaciones de red, como APIs, servicios en tiempo real, servidores de comunicaciones, etc.
+- Aplicaciones cuyos clientes estan hechos en JavaScript, pues comparten codigo y estructura entre el cliente y el servidor.
+
+Hablemos ahora un poco de donde viene el desarrollo de JS y de NodeJS:
+Desde la versión 4.0 de Node.js, una de las principales mejoras es que incluyen la libreria V8 en la version v4.5, incluyendo de forma estable muchas caracteristicas de ES2015(ES6) que nos haran a vida mas facil.
+- Block scoping,
+- Classes,
+- Typed arrays,
+- Generators,
+- Promises,
+- Symbols,
+- Template string,
+- Collections(Map, Set, etc),
+and arrow functions.
+
+Todas estas mejoras ayudaron mucho al desarrollo diario de aplicaciones.
+
+Para cuando vayamos a trabajar con NodeJS, tenemos una página para ver que podemos usar de nodejs para desarrollar nuestras aplicaciones, para eso tenemos esta web, muy parecida a la de frontend:
+https://caniuse.com/
+
+Para NodeJs tenemos:
+https://node.green/
+
+Ahora vamos a ver como instalar NodeJs, tenemos varias formas:
+
+- Desde el instalador de la web, vamos a su web lo descargamos y lo instalamos,
+- Con un instalador de paquetes,
+- Compilandolo manualmente,
+- Usando un gestor de versiones, -> nvm, existen otros gestores pero recomeiendan este que va muy bien.
+
+La recomendada es usas nvm, node version manager. Tenemos como instalar nvm en su repo: Vemos como hacerlo para mac y linux:
+
+https://github.com/nvm-sh/nvm
+
+Para windows:
+
+https://github.com/coreybutler/nvm-windows
+
+Bajamos el instalador e instalamos.
+
+Si usamos un manejador de versiones de nodejs podremos instalar varias versiones en nuestro pc, si lo hacemos con el instalador de la web solo podemos usar la version que instalemos.
+
+Para ver que version de nvm e instalación de nodejs:
+  nvm version -> vemos que version de nvm tenemos instalada.
+  nvm list -> vemos las versiones instaladas.
+  nvm install <version-nodejs> -> instalamos la version que queremos.
+  nvm use <version-nodejs> -> usamos la version.
+
+
+Para ver que version de nodejs:
+  node -v
+  npm -v
+  npm -g list --depth=0
+
+Vale ahora vamos a ver como funciona esto de nodejs en codigo vamos a ver como crear un servidor basico usando nodejs. Lo tenemos en la carpeta practica/servidor-basico/index.js.
+
+Para arrancar el servidor:
+
+node index.js y vemos como arranca. Ahora como vemos cada vez que hagamos cambios en el codigo debemos parar e iniciar de nuevo el servidor para que se vean los cambios para evitar esto vamos a instalar una utilizada que nos reiniciara el servidor cada vez que detecte cambio en el codigo, esa utilidad es nodemon.
+
+  npm install -g nodemon
+
+Lo vamos a instalar de manera global, en nuestro pc. NO en el proyecto.
+
+Ya instalado debemos hacer para arrancarlo:
+
+  nodemon
+  ó
+  nodemon index.js
+
+nodemon busca varias cosas al ejecutarlo sin nada solo su nombre, por defecto el busca un fichero index.js en la carpeta, sino lo encuentra busca un fichero llamado package.json a ver si en ese fichero esta indicado cual es el fichero de arranque de la aplicacion, si no estan ambos pues fallara y no arrancara.
+
+Ahora vamos a ver que es NPM:
+
+NPM: node package manager, es un gestor de paquetes que nos ayuda a gestionar las dependencias de nuestro proyecto.
+Entre otras cosas nos permite:
+- Instalar librerias o programas de terceros.
+- Eliminarlas.
+- Mantenerlas actualizadas.
+
+Este gestor de paquetes se instala junto con nodejs.
+
+Ahora para probar vamos a instalar una libreria en la carpeta practica/servidor-basico
+
+  npm install chance
+
+Esta libreria se inventa nombres de manera aleatoria.
+Como vemos esta libreria la estamos instalando en el proyecto. Vemos que al instalarse se han generado los siguiente:
+
+carpeta:
+node_modules
+
+archivos:
+package.json
+package-lock.json
+
+Ya hablaremos mas adelante de estos archivos y carpeta. Ahora una cosa que debemos saber que npm tiene un comando que se llama:
+
+  npm repo <paquetes/libreria>
+  npm repo chance
+
+  https://github.com/chancejs/chancejs
+
+Nos lleva a la pagina de ese paquete y libreria. Para ver su documentacion y como se utiliza.
+
+Ahora vamos a ver como crear nosotros un package.json, ojo esto es lo primero que debemos hacer al crear un proyecto.
+
+  npm init
+
+Le damos ok a todas las opciones.
+Tambien tenemos un comando para que lo hago todo por defecto:
+
+  npm init -y
+
+En el archivo package.json es donde se ven las caracteristicas de nuestro proyecto, y las dependecias del mismo. Tambien vemos que la carpeta node_modules que es donde se instalan lo que descargamos, tambien vemos que tenemos el archivo package-lock.json ahi estan las dependencias de las dependencias.
+
+OJO en el .gitignore acordarse de gitignore la carpeta node_modules para que no vaya al repo.
+
+Paro mitad:
