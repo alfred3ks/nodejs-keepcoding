@@ -22,6 +22,7 @@ const server = http.createServer(function (request, response) {
   // Mandamos el contenido:
   // response.end('<h1>Wake up, <b>Neo</b></h1>');
   // Mostramos el mensaje en HTML con nombres aleatorios:
+  // https://chancejs.com/person/name.html
   response.end('<h1>Wake up, ' + chance.name());
 
 })
@@ -38,4 +39,6 @@ Para arrancar el servidor por medio de la consola:
 
   Tenemos el metodo .writeHead() del objeto response, son las cabeceras que envia el servidor, podemos enviar el codigo de la respuesta en este caso es 200, todo ok, y el tipo de contenido, primero texto plano y luego html.
   Luego con el metodo .end() del objeto response mandamos lo que deseamos.
+
+  nodemon index.js, para arrancar la aplicacion usando nodemon.
 */

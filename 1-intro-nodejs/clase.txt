@@ -147,8 +147,201 @@ Tambien tenemos un comando para que lo hago todo por defecto:
 
   npm init -y
 
-En el archivo package.json es donde se ven las caracteristicas de nuestro proyecto, y las dependecias del mismo. Tambien vemos que la carpeta node_modules que es donde se instalan lo que descargamos, tambien vemos que tenemos el archivo package-lock.json ahi estan las dependencias de las dependencias.
+En el archivo package.json es donde se ven las caracteristicas de nuestro proyecto, y las dependencias del mismo. Tambien vemos que la carpeta node_modules que es donde se instalan lo que descargamos, tambien vemos que tenemos el archivo package-lock.json ahi estan las dependencias de las dependencias.
 
 OJO en el .gitignore acordarse de gitignore la carpeta node_modules para que no vaya al repo.
 
-Paro mitad:
+-- JAVASCRIPT AVANZADO: OJO.
+Ahora vamos a ver unos conceptos de JS que un desarrollador debe saber si se quiere considerar un desarrollador de JS.
+
+-- Hoisting:
+Es una operación que hace el interprete de JS con las variables de tipo var. OJO solo con var. El interprete se lleva la declaracion de la variable al inicio del contexto de esa variable, en JS el contexto es la funcion donde se ha creado, si es una funcion al inicio de esta, si es global al inicio del contexto global.
+Esto significa que el interprete va a mover al principio de su contexto la declaracion de la varaible, manteniendo la iniciacion donde estaba.
+
+Ejemplo: Asi desarrollamos el codigo:
+var pinto = 'global value';
+function pinta(){
+  console.log('pinto', pinto);
+  var pinto = 'Local value';
+}
+
+pinta();
+
+Asi hace el interprete:
+var pinto = 'global value';
+function pinta(){
+  var pinto;
+  console.log('pinto', pinto); // undefined
+  pinto = 'Local value';
+}
+
+pinta();
+
+La variable local pisa la local y es la que se muestra por el console, y como se hace hoisting es undefined.
+
+El hoisting no es un problema, es una caracteristica del lenguaje. Recomendacion, usar let y const. Ya que no hacen hoisting, ya que su scope es el bloque en que es definido.
+
+OJO las funciones tambien hacen hoisting, pero solo cuando las uso como expresio. No como una declaracion.
+Expresion-> function(){}
+Declaracion-> var y = function(){}, asignacion a una variable.
+Lo que vemos que se ira arriba es la y, no la funcion.
+Las arrow function no hacen hoisting.
+
+-- Control de errores:
+Tenemos dos tipos de errores en JS:
+- errores sincronos.
+- errores asincronas.
+
+Se gestionan de forma distinta, lo veremos mas adelante mas claro. Los errores sincronos los gestionaremos con try{} catch(){} y los errores asincronos los gestionaremos con callback.
+
+-- JSON:
+Son las siglas de JavaScript Object Notation.
+- Es un formato para el intercambio de datos, derivado de la notacion literal de objetos de JavaScript.
+- Se usa habitualmente para serializar objetos(convertirlo a texto) o estructuras de datos.
+- Se ha popularizado mucho principalmente como alternativa a XML, por ser mas ligero que este.
+
+Como converitmo un objeto a JSON: Por medio del objeto global JSON con su metodo JSON.stringify(objeto):
+let empleado = {
+  nombre: 'Thomas Anderson',
+  profesion: 'Developer JS'
+}
+
+let empleadoJSON = JSON.stringify(empleado);
+console.log(empleadoJSON);
+{"nombre": "Thomas Anderson", "profesion": ""Developer JS};
+
+Vemos que los nombres de las propiedades se llevan es comillas dobles, solo permite comillas dobles.
+
+Ahora a la inversa para pasar un JSON a Objeto: Usaemos el objeto global JSON con su metodo JSON.parse(json);
+
+let empleadoObjet = JSON.parse(empleadoJSON);
+console.log(empleadoObjet);
+{nombre: 'Thomas Anderson', profesion: 'Developer JS'}
+
+-- Use strict: JS en modo estricto:
+'use strict';
+
+JS cuando se creo lo creo Brendan Eich, estando en nestscape, un viernes se fue a su casa y un lunes tenia la primera version de JS, una alfa. Se llamaba mocha.
+
+JS posee el modo escrito que soluciona varios fallos originarios del lenguaje:
+El modo estricto habilita avisos y hace de JavaScript un lenguaje un poco mas coherente. El modo no estricto se suele llamar sloppy mode, par ahabilitar se puede escribir al principio de un fichero.
+
+  'use strict';
+
+O tambien se puede habilitar dentro de una función:
+
+  function estoyEnStrictMode(){
+    'use strict';
+  }
+
+Pero que nos aporta el mode strict:
+- Las varaibles deben ser declaradas. En sloppy mode, una varaible mal escrita se crearia en global, en stric fallaria.
+- En funciones que no son metodos this sera undefined.
+- eval() es mas limpio. Las varaibles que se definen en el codigo evaluado no pasan al scope que lo rodea.
+
+Ahora cada vez que creemos un programa usaremos el use strict.
+
+-- Las funciones:
+Las funciones son objetos. Por lo tanto tambien propiedades y métodos.
+
+Todo en JS menos los primitivos son objetos.
+Los primitivos de JS:
+¿Cuántos tipos de JavaScript hay?
+Los 9 tipos de datos en JavaScript
+  Undefined.
+  Boolean.
+  Number.
+  String.
+  BigInt.
+  Symbol.
+  Null.
+  Object.
+
+Funciones - declaración:
+function suma(num1, num2){
+  return num1 + num2;
+}
+suma(2,4);
+
+- Requieren un nombre,
+- Solo a nivel de programa o directamente e el cuerpo de otra funcion.
+- Hacen hoisting.
+
+Funciones - expresion:
+let suma = function(num1, num2){
+  return num1 + num2;
+}
+suma(4,5);
+
+- Como son expresiones, se pueden definir en cualquier sitio donde pueda ir un valor. Por ejemplo, podemos pasarlas como parametros.
+- No hacen hoisting, se pueden usar solo despues de su definicion.
+- Pueden tener un nombre, pero solo seria visible dentro del cuerpo.
+
+Podemos crear funciones como propiedades de un objeto:
+
+let calculadora = {
+  suma: function(a,b){return a + b};
+  resta: function(a,b){return a - b};
+}
+
+calculadora.suma(4,5);
+calculadora.resta(4,5);
+
+Cuando una funcion es una propiedad de un objeto se les llama metodo.
+
+Podemos crear objetos por medio de funciones:
+function Fruta(){
+  let nombre, familia;
+  this.getNombre = function(){return nombre};
+  this.setNombre = function(value){nombre = value};
+}
+
+let limon = new Fruta();
+limon.setNombre('Citrus limon');
+
+Cuando se usa new al invocar una funcion se comporta como un constructor de objetos.
+
+Vemos un ejemplo: 1-intro-nodejs/practica/instancias.js
+
+-- Callbacks:
+Es como dar mas instrucciones, osea pasamos esa instruccion adicional.
+Una función callback es aquella que es pasada como argumento a otra función para que sea "llamada de nuevo" (call back) en un momento posterior. Una función que acepta otras funciones como argumentos es llamada función de orden-superior (High-Order), y contiene la lógica para determinar cuándo se ejecuta la función callback. Es la combinación de estas dos la que nos permite ampliar nuestra funcionalidad.
+
+Un ejemplo es cuando usamos setTimeout(), que recibe como parametros:
+- Una funcion con el codigo que queremos que se ejecute tras la espera,
+- El numero de milisegundos que tiene que estar en pasusa hasta llamarla.
+
+console.log('Empiezo');
+
+setTimeout(()=>{
+  console.log('Me ejecuto dentro');
+}, 2000);
+
+console.log('Fin')
+
+La función que pasamos a setTimeout() es un callback.
+
+Los callbacks nos aportan muchos beneficios, ya que NO bloqueo mi programa, y solo cuando pasan los 2s se lanza la funcion.
+
+Los callbacks se usan sobre todo en recursos de comunicaciones, hablar con el disco duro, por ejemplo. La idea es hacer operaciones en paralelo con la ejecucion del resto del codigo ya que esas operaciones son mas lentas.
+Hacemos una operacion asincrona. Los callbacks nos aportan asincronismo.
+
+En nodejs, todos los usos de entrada/salida(I/O) deberian ser asincronos.
+Si tras una llamada a una funcion asincrona queremos hacer algo, como comprobar su resultado o su hubo errores, le pasamos un argumento mas, una expresion modo funcion -> callback, para que la invoque cuando termine.
+
+function suma(n1,n2, callbacks){
+  let resultado = n1 + n2;
+  callback(resultado);
+}
+
+suma(1,4, (res)=>{
+  console.log(res);
+})
+
+La funcion la pasamos como tercer parametro entra arriba y se ejecuta dentro. Esto es un ejemplo simbolico porque esto no necsita como tal un callback pero es para que veamos como se pasa una funcion como callback.
+
+Vemos los callback en el siguiente ejemplo:
+Haremos una función que recibe un texto y tras 2 segundos lo escriba en la consola.
+
+1-intro-nodejs/practica/asincrono.js
+
