@@ -1,0 +1,139 @@
+________________________________
+--nodejs Segunda Sesión uploads:
+--------------------------------
+Hoy vamos a trabajar con nuestro fichero:
+
+  asincrono_serie.js
+
+La idea es repetir la funcion varias veces.
+Lo que haremos es hacer una funcion que se llame a si misma, osea recursividad.
+Vemos como una funcion se llama a si misma.
+En esta funcion vemos que le decimos que se repita un numero, para el caso 5. Ahora vamos a ver como lo hariamos si tenemos un array. Lo vemos en:
+
+  asincrono_serie_array.js
+
+Aqui vemos que cuando necesitemos recordar algo que no recordemos podemos usar internet para buscar informacion y un buen sitio es la MDN. Sobre todo en ingles.
+
+No debemos inventar la rueda, ya existe una libreria para hacer funciones asincronas en paralelo.
+
+  npm repo async
+  https://github.com/caolan/async
+
+Tiene 2 tipos de funciones o utilidades, metodos para usar con colecciones y otro con control de flujo. Eso lo hemos realizado nosotros, lo que buscamos es controlar el flujo. Primero 5 veces y despues para procesar una coleccion, que es el array.
+
+  https://caolan.github.io/async/v3/docs.html#concat
+
+Esto es practicamente lo que hemos realizado nosotros con el array. De ahi viene lo de no reinventar la rueda.
+
+-- Continuamos con mas conceptos de JS:
+___________________________________
+-- Truthy and Falsy: true or false:
+-----------------------------------
+En JavaScript todo tiene un valor booleano, generalmente conocido como truthy o falsy.
+
+Por ejemplo: Evaluamos si el contenido de la variable a que evalua: a true o false:
+let variable = 'value';
+if(variable){
+  console.log('Soy truthy');
+}
+
+variable = 0;
+if(variable){
+  console.log('..');
+} else {
+  console.log('Soy falsy');
+}
+
+--- Vemos las reglas que evalua a verdadero y que a falso: OJO ESTO LO DEBEMOS SABER!!!! ---
+__________________________________________
+Los siguientes valores siempre son falsos:
+------------------------------------------
+- false, -> valor booleano,
+- 0 (cero),
+- "" (cadena vacia),
+- null,
+- undefined,
+- NaN (Valor especial de tipo Number que significa Not-a-Number)
+------                                                        -------
+
+Todos los demas valores son verdadero (Truthy), incluyendo el "0" -> es una cadena no un numero,
+las funciones vacias evalua a verdadero, los arrays vacios tambien a verdadero y objetos vacios tambien a verdadero.
+
+Ahora vemos cuando hacemos comparaciones:
+Los valores false, 0 y "":
+Los valores false, 0 (cero), y "" (cadena vacía) son equivalentes:
+var c = (false == 0); // true
+var d = (false == ""); // true
+var e = (0 == ""); // true
+
+Los valores null y undefined no son equivalentes con nada, excepto con ellos mismos:
+var f = (null == false); // false
+var g = (null == null); // true
+var h = (undefined == undefined); // true
+var i = (undefined == null); // true
+
+Y por último, el valor NaN no es equivalente con nada, ni siquiera consigo mismo:
+var j = (NaN == null); // false
+var k = (NaN == NaN); // false
+
+La cosa se complica: OJO!!!!
+
+if ( [] ) { /*se ejecuta*/ }
+/*Array es instancia de Object, y existe*/
+
+if ( [] == true ) { /*no se ejecuta*/ }
+/*comparamos valores!, [].toString -> "" -> falsy*/
+
+if ( "0" == 0 ) // true (se convierten a números)
+
+if ( "0" ) {console.log('si')} // "si" (se evalúa el string)
+
+Aqui vemos que el lenguaje hace comparaciones de valor y tipo, cuando usamos la comparacion con doble = evalua el valor y no su tipo. Entonces para evitar esto lo que debemos es usar es el triple igual (===). Para que haga comparacion entre tipo y luego el valor.
+
+Usamos el igual estricto (===) y el distinto estricto (!==):
+
+var melio = ( false == 0 ); // true
+var seguro = ( false === 0 ); // false
+
+Se comparan primero por su tipo y luego por su valor.
+Asi evitaremos que el lenguaje haga cosas que pensaremos que es extraño.
+Ahora usaremos siempre siempre siempre comparaciones extrictas. (===).
+
+---------------------------------------
+--- THIS --- OJO OJO OJO IMPORTANTE!!!!
+---------------------------------------
+this a veces es undefined y a veces no. Suele dar dolores de cabeza, veremos como entender a this.
+
+La palabra clave this trata de representar al objeto que llama nuestra función como método, no donde está definida.
+Por lo general, su valor hace referencia al objeto propietario de la función que la está invocando o en su defecto, al objeto donde dicha función es un método.
+
+CUIDADO!
+De forma general, cuando se usa en algo distinto a un método su valor es el contexto global (o undefined si estamos en modo estricto).
+
+console.log(this); // window en un browser, global en node
+
+function pinta(){
+  console.log(this); // window en un browser, global en node
+}
+
+Vamos a ver el ejemplo en:
+
+  this.js
+____________
+-- Closures:
+------------
+Un closure se construye con una función (A) que devuelve otra (B).
+La función devuelta (B), sigue manteniendo el acceso a todas las variables de la función que la creó (A).
+
+function creaClosure(valor){
+  return function(){
+    return valor;
+  }
+}
+
+Vemos un ejemplo:
+
+  closure.js
+______________
+-- Prototipos: OJO IMPORTANTE ENTENDER. 2.11.49
+--------------

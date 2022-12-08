@@ -343,5 +343,5 @@ La funcion la pasamos como tercer parametro entra arriba y se ejecuta dentro. Es
 Vemos los callback en el siguiente ejemplo:
 Haremos una función que recibe un texto y tras 2 segundos lo escriba en la consola.
 
-1-intro-nodejs/practica/asincrono.js
+1-intro-nodejs/practica/asincrono_paralelo.js
 
