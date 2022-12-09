@@ -135,5 +135,88 @@ Vemos un ejemplo:
 
   closure.js
 ______________
--- Prototipos: OJO IMPORTANTE ENTENDER. 2.11.49
+-- Prototipos: OJO IMPORTANTE ENTENDER. Asociado a la Herencia en POO.
 --------------
+Prototype chain, la cadena de prototipos:
+JS es un lenguaje multiparadigma, puede usarse en POO, funcional, imperativa. etc.
+
+Casi todo en Javascript es un objeto. Cada objeto tiene una propiedad interna llamada prototype que apunta a otro objeto.
+Su objeto prototipo tiene a su vez una propiedad prototype que apunta a otro objeto, y así sucesivamente.
+A esto se le llama cadena de prototipos.
+Si sigues la cadena en algún momento llegarás al objeto Object, cuyo prototipo es null. El padre de todos los objetos.
+
+Lo que buscamos es llegar es a la herencia, para la POO.
+
+Cuando pides una propiedad a un objeto el interprete mira a ver si la tiene ese objeto. Si no la encuentra mira a ver si la tiene su prototipo, y así hasta llegar al final de la cadena.
+Si no lo encuentra devuelve el error correspondiente.
+Esto nos permitiría hacer algo parecido a clases e implementar herencia.
+
+Aqui veremos JS la POO. Con JS la orientación a objetos es mas poderosa que cualquier otro lenguaje, esto debido a los prototipos.
+
+Vemos el ejemplo en: Lo tenemos que volver a ver porque no me ha quedado muy claro:
+
+  prototype.js
+__________
+-- Clases:
+----------
+
+class Mascota {
+    constructor(nombre) {
+      this.nombre = nombre;
+    }
+    saluda() {
+      console.log(`Hola soy ${this.nombre}`);
+    }
+}
+
+const mascota = new Mascota('Toby');
+mascota.saluda();
+
+La herencia:
+class Perro extends Mascota {
+    constructor(nombre) {
+        super(nombre);
+    }
+}
+let perro = new Perro('Niebla');
+perro.saluda();
+
+Una forma mas comoda para hacer lo anterior. Lo de los prototype. Esto lo hace por dentro, lo de las clases es azucar sintactico. Sugar sintactic.
+_______________________________________________________________
+Ahora dejamos de lado sintaxis de JS y nos centramos en NodeJS:
+__________
+-- Process: Objeto global de NodeJS: OJO OJO Muy importante!!!!
+----------
+El objeto global process tiene muchas propiedades que nos serán útiles, como process.platform, que en OS X nos dirá 'darwin', en linux 'linux', etc.
+También tiene métodos útiles como process.exit(int) que para node estableciendo un exit code.
+O eventos como process.on('exit', callback) donde podemos hacer cosas antes de salir.
+
+Tiene un método muy interesante, process.nextTick, que recibe un solo argumento, un callback.
+
+process.nextTick(function () {
+    console.log('Siguiente vuelta del event loop, whooouuu!')
+});
+
+Lo que hará es colocar la función de nuestro callback al principio de la siguiente vuelta del event loop (ahora vemos que es eso).
+
+______________________
+-- Eventos. Event Loop:
+----------------------
+NodeJS usa un solo hilo.
+Tiene un bucle interno, que podemos llamar 'event loop' donde en cada vuelta ejecuta todo lo que tiene en esa 'fase', dejando los callbacks pendientes para otra vuelta.
+La siguiente vuelta mira a ver si ha terminado algún callback y si es así ejecuta su handlers.
+
+El equivalente de esta construcción
+process.nextTick(function () {
+    console.log('Siguiente vuelta del event loop, whooouuu!')
+});
+Es como decir a node "cuando vuelvas a comprobar los callbacks finalizados haz esto!".
+
+Non blocking:
+Si nodeJS se quedara esperando hasta que termine una query o una petición a Facebook, acumularía demasiados eventos pendientes y dejaría de atender a las siguientes peticiones, ya que como dijimos usa un solo hilo.
+Por eso todos las llamadas a funciones que usan IO (por ejemplo escritura o lectura en disco, la red, bases de datos, etc) se hacen de forma asíncrona. Se aparcan para que nos avisen cuando terminen.
+
+NodeJS nos proporciona una forma de manejar IO en forma de eventos.
+Usando el EventEmitter podemos colgar eventos de un identificador.
+eventEmitter.on('llamar telefono', suenaTelefono);
+// suenaTelefono es una función
