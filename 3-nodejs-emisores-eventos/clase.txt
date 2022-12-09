@@ -1,0 +1,77 @@
+Comenzamos la tercera clase de NodeJS.
+
+Vamos a continuar donde nos quedamos, con los eventos:
+______________________
+-- Eventos. Event Loop:
+----------------------
+NodeJS usa un solo hilo.
+Tiene un bucle interno, que podemos llamar 'event loop' donde en cada vuelta ejecuta todo lo que tiene en esa 'fase', dejando los callbacks pendientes para otra vuelta.
+La siguiente vuelta mira a ver si ha terminado algún callback y si es así ejecuta su handlers.
+
+El equivalente de esta construcción
+process.nextTick(function () {
+    console.log('Siguiente vuelta del event loop, whooouuu!')
+});
+Es como decir a node "cuando vuelvas a comprobar los callbacks finalizados haz esto!".
+
+Non blocking:
+Si nodeJS se quedara esperando hasta que termine una query o una petición a Facebook, acumularía demasiados eventos pendientes y dejaría de atender a las siguientes peticiones, ya que como dijimos usa un solo hilo.
+Por eso todos las llamadas a funciones que usan IO (por ejemplo escritura o lectura en disco, la red, bases de datos, etc) se hacen de forma asíncrona. Se aparcan para que nos avisen cuando terminen.
+
+NodeJS nos proporciona una forma de manejar IO en forma de eventos.
+Usando el EventEmitter podemos colgar eventos de un identificador.
+eventEmitter.on('llamar telefono', suenaTelefono);
+// suenaTelefono es una función
+
+Tenemos el ejemplo: Aqui lo que buscamos es aprenderlo usar un eventEmitter y tambien que lo podamos identificar cuando lo veamos en otros proyectos o librerias de terceros.
+Asi podremos comunicar distintas partes de nuestras aplicacion.
+
+  eventEmiter.js
+
+Trabajar con evento es comodo para procesar datos.
+
+___________
+-- Módulos:
+-----------
+Dividir nuestra aplicacion en partes, en modulos:
+Los módulos de Node.js se basan en el estándar CommonJS. Es el nativo de NodeJS. Para el Frontend tenemos los ESModules.
+• Los módulos usan exports para exportar cosas.
+• Quien quiere usar un módulo lo carga con require.
+• La instrucción require es síncrona.
+• Un módulo es un singleton. Significa que hay una unica instancia en memoria de eso, no se hacen multiples copias en memoria de eso.
+
+Un módulo básico:
+modulo.js
+console.log('Hola desde un módulo!');
+
+index.js
+require('./modulo.js');
+
+Donde busca Node.js los módulos:
+1. Si es un módulo del core.
+2. Si empieza por './' or '/' or '../' va a la ruta calculada desde la situación del fichero actual.
+3. Módulos en la carpeta node_modules local.
+4. Módulos en la carpeta node_modules global.
+
+require('../../../../../lib/files/modulo.js');
+Como evitar esto? Asignando NODE_PATH a la ruta donde meteremos nuestras librerías en el arranque de nuestra app.
+
+NODE_PATH=lib node index.js
+
+require("files/modulo.js"); // mejor así!
+
+¿module.exports o exports?
+• exports es un alias de module.exports.
+• Node lo crea automáticamente
+• Para hacer exports con nombre se pueden usar los dos indistintamente Si asignamos algo directamente a exports deja de ser un alias. Solo podemos usarlo con exports.loquesea.
+
+  Vemos los ejemplos en la carpeta modulo.
+  modulo/index.js
+  modulo/calculadora.js
+
+Principalmente podemos encontrar módulos de terceros en npmjs.com.
+Para buscar un modulo de nodeJS:
+nodejs ocr y lo buscamos.
+
+Tenemos muchos mudulos o librerias en nodeJS para lo que necesitemos.
+Termino aqui ahora como vamos a ver ya express lo comienzo con un nuevo archivo.

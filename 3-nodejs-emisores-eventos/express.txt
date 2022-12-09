@@ -1,0 +1,113 @@
+Empezamos con express: Tenemos un pdf con la informacion, ver en docs.
+
+Express nos aporta la oportunidad de estructurar nuestra app. Tenemos los patrones.
+
+En Node.js podemos usar cualquier patrón para estructurar nuestro código.
+El patrón MVC es comúnmente usado por muchos desarrolladores por su buen resultado.
+
+MVC:
+• El controlador recoge datos del modelo y los da a la vista para que los represente en su interfaz.
+• La vista recibe las acciones del usuario y da información al controlador que opcionalmente guardará lo necesario en el modelo.
+• El modelo avisará el controlador de que hay nuevas versiones de los datos, y este opcionalmente las entregará a la vista.
+
+Averiguar sobre este modelo -- MVC -- que es bastante interesante.
+
+Vamos a usar express con MVC.
+Express -> es un framework web minimalista para NodeJS para APIs.
+A continuacion tenemos la pagina web:
+
+http://expressjs.com/
+
+IBM es dueña de expressjs.
+
+Vamos a trabajar con la version 4.0.
+http://expressjs.com/en/4x/api.html
+Ahi tenemos la documentacion muy necesaria para cuando necesitemos algo, a la izquierda tenemos los temas que aborda este framework.
+
+Vamos a crearnos una app basica con express. Para eso vamos a usar express generator, el cual es una herramienta que me ayuda a crear app de express.
+
+Vamos a instalar express generator de forma global:
+
+  npm i -g express-generator
+
+Ahora podemos ver el comando de ayuda para express generator:
+
+  express -h
+
+Ahora para crear la app:
+
+  express nodeapi --ejs
+
+Accedemos al proyecto siguiendo las instrucciones:
+  cd nodeapi
+  npm install
+
+Y arrancamos el proyecto:
+
+  npm start
+
+Lo que haremos es habilitar los debug, para que nos de mensajes por consola de lo que esta pasando. En local:
+Aqui tenemos un pequeño detalle para los que usamos windows. Lo vemos: Vamos a crearnos dentro del package.json el scritp de arraque con el debug:
+
+"scripts": {
+    "start": "node ./bin/www",
+    "dev": "DEBUG=nodeapi:* & npm start"
+  },
+
+Vemos el script el dev:
+npm run dev
+
+Y vemos en el navegador: localhost:3000
+
+Ahora vemos que en windows no funciona tan bien ya que la variable de entorno DEBUG, vamos a arreglarlo instalando una libreria que nos solucionara este problema, la vamos a instalar en el proyecto, osea esto se debe instalar siempre.
+
+  npm i cross-env
+
+Con este modulo podemos establecer variables de entorno de una sola forma, independiente del sistema operativo donde de ejecute la app.
+
+Asi nos queda el scritp:
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "cross-env DEBUG=nodeapi:* npm start"
+  },
+
+npm run dev
+
+Y deberia funcionar perfectamente. Ya nos muestra el puerto por donde corre nuestra app.
+nodeapi:server Listening on port 3000 +0ms
+
+OJO este modulo es necesario siempre instalarlo en todos los proyectos.
+Importante los script de arranque de la aplicacion en el package.json.
+
+Ahora dentro de nuestro proyecto nodeapi vamos a crearle su .gitignore para poner ahi node_modules. OJO importante!!!!
+
+OJO existe una web, que tiene un esquema de gitignore de difrentes entornos:
+https://www.toptal.com/developers/gitignore
+
+Vamos a ver porque es el arranque de la app en el puerto 3000: vemos que en el script nos manda a la siguiente carpeta:
+
+"start": "node ./bin/www",
+Vamos archivo www
+
+Vamos a ella y vemos que el puerto de arraque es ese. Debemos conocer todo lo que compone nuestra app. recordar que esto es un esqueleto.
+
+Vamos al archivo app.js: Vamos a hacer un cambio de unas variables que se usan una sola ves.
+Lo que hacemos en las rutas de la aplicacion no meter las variables sino la ruta directo con el requiere:
+---------------------------------------------------------
+// Eliminamos estas variables que se usan una sola vez:
+// var indexRouter = require('./routes/index');
+// var usersRouter = require('./routes/users');
+---------------------------------------------------------
+// AQUI YA NO METEMOS LAS VARIABLES SINO EL REQUIRE DIRECTO:
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter);
+/**
+ * Rutas de mi aplicacion web: MODIFICADAS LA ORIGINA SON LAS RUTAS DE ARRIBA:
+ * Cuando hacemos peticiones estas son las rutas que se muestran:
+ */
+app.use('/', require('./routes/index'));
+app.use('/users', require('./routes/users'));
+--------------------------------------------------------------------------------
+
+Paro en la mitad video 3.
+
