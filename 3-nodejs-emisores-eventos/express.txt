@@ -109,5 +109,66 @@ app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 --------------------------------------------------------------------------------
 
-Paro en la mitad video 3.
+Seguimos viendo en nuestro app.js:
+
+- Los middeware los podemos poner a nivel de la aplicacion como vemos en app.js o a nivel del router como vemos en router:
+
+app.use();
+route.use();
+
+Ahora vamos a ver los tipos de peticiones:
+
+HTTP pone a nuestra disposicion varios metodos, de los cuales generalmente hacemos distintos usos:
+
+- GET: Para pedir datos, es idempotente (p.e. listas),
+- POST: Para crear recursos, (p.e. crear un usuario),
+- PUT: Para actualizar, es idempotente, (p.e. guardar un usuario existente),
+- DELETE: Para eliminar un recurso, es idempotente (p.e. eliminar un usuario).
+
+idempotente -> si lo ejecutas varias veces los resultados no cambian. Esto esta definido por el estandart del protocolo HTTP.
+
+OJO una cosas que debemos saber en el tema de las rutas:
+En el orden que carguemos nuestras rutas a express es el orden en que las interpretara.
+Si ponemos estaticos despues de nuestras rutas podremos sobre-escribir un fichero estatico con la ruta, por ejemplo para comprobar si el usaurio tiene permisos para descargarlo.
+
+Ahora vamos a vr como recibimos parametros en una app de express:
+Habitualmente recibimos parametros en nuestros controladores de varias formas:
+- En la ruta -> (/user/5),
+- Con parametros en query string (/user?sort=name),
+- En el cuerpo de la peticion (POST, PUT generalmente),
+- Tambien podemos recibirlo en la cabecera, pero esta zona solemos dejarla para informacion de contexto, como autentificacion, formatos, etc.
+
+Vamos a ver el tema de la cabecera:
+Abrimos el navegador:
+localhost:3000
+Vamos a las developers tools del navegador:
+network o red. Recargamos la pagina y ahi vemos las peticiones.
+Pulsamos a donde dice localhost y vemos las cabeceras. Ahi tenemos las cabeceras de la peticion y la de la respuesta.
+
+Osea como vemos puede haber informacion en las cabeceras tanto en la peticion como en la respuesta.
+
+Ahora vamos a ver como recibir parametros en la ruta:
+Lo vemos en el codigo, nos vamos a routes/index.js:
+
+OJO creo ver que los parametros que viene por peticiones de tipo get son string.
+Lo vemos en las peticions de tipo get la salida por el log. en routes/index.js
+
+Vale ya tenemos la explicacion para las peticiones ahora vamos a ver como validar eso que recibimos, tenemos un módulo llamado express-validator:
+
+  npm i express-validator
+
+Instalamos en nuestro proyecto.
+https://www.npmjs.com/package/express-validator
+
+Aqui vemos como destructuramos el objeto validator/check porque solo necesitamos dos cosas de es objeto y asi no lo cargamos entero:
+
+const { query, validationResult, body, param } = require('express-validator');
+
+query para validaciones de tipo query.
+validationResult para mandar el mensaje del error de la validacion:
+
+OJO Aqui es importante este modulo de express-validator porque con el podemos validar lo que recibimos de las peticiones que cumplan nuestro estandar.
+
+
+
 
