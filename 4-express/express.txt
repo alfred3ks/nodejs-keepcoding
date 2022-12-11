@@ -1,0 +1,177 @@
+Continuamos en este video 4 con la explicacion de express.
+Nos quedamos en routes/index.js trabajando con el modulo de express validator:
+
+recordar instalamos express validator:
+
+  npm i express-validator
+
+Y empezamos a implementar validaciones sobre todo en validaciones de tipo query:
+Este modulo nos ayudara con las validaciones. Nos ahora mucho trabajo pero eso es nuestra responsabilidad de la informacion que acceda al servidor siga nuestras normas.
+
+Lo que haremos es meter la logica para gestionar errores ya que nuestro middeware no gestiona bien esos errores:
+Lo vemos en routes/index.js
+
+// Tambien cargamos middeware query:
+router.get('/enquerystring',
+  // Vemos la validacion con middeware query:
+  query('color').isLowercase().withMessage('must be lower case'),
+  query('talla').isNumeric().withMessage('must be numeric'),
+  (req, res, next) => {
+    // Aqui usamos el otro middeware validationResult:
+    validationResult(req).throw(); // Lanza excepcion si no valida lo de query().
+    // Vemos por el log:
+    console.log('req.query', req.query);
+    res.send('OK - query string');
+  })
+
+Vamos al middeware de erorres para menejar esos errores: app.js
+
+app.use(function (err, req, res, next) {
+  // Chequeamos error de validacion: Codigo nuestro:
+  if (err.array) { // Comprobamos si el error tiene un array si lo tiene hay un error
+    // Le pasamos el error por codigo HTTP:
+    err.status = 422;
+    const errInfo = err.array({ onlyFirstError: true })[0]; // Obtenemos el primer valor de ese array.
+    err.message = `Not valid - ${errInfo.param} ${errInfo.msg}`;
+  }
+
+  // set locals, only providing error in development
+  // res.local para pasar cosas a las vistas:
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  // Renderizamos la vista de errores, con el metodo .render() de express.
+  res.render('error');
+});
+
+Ahora vemos los diferentes metodos de respuesta:
+res.download() -> descarga de ficheros.
+res.end()
+res.json()
+res.jsonp()
+res.redirect() -> redirecciones. No muy comun en apis.
+res.render() -> para mostrar vistas en HTML.
+res.send()
+res.sendFile()
+res.sendStatus()
+
+Podemos ver en la documentación los mas usados. Ver en pdf KCW_Express.pdf
+
+Tambien como nota debemos saber que tambien hay middeware de terceros.
+- morgan,
+- multer,
+- etc. Vemos el enlace en el pdf.
+
+________________________________
+-- Template engines: Las vistas:
+--------------------------------
+Express tiene la capacidad de mostrar o gestionar distintas vistas.
+Además de servir html estático podemos usar sistemas de plantillas. Express por defecto monta Jade, podemos cambiarlo fácilmente, por ejemplo a EJS que es uno de los más usados.
+
+Porque EJS ya que su sintaxis es muy parecido a HTML. Jade te obliga a aprender un lenguaje nuevo.
+EJS es mas estandar. Hay unos cuantos mas.
+
+Lo podemos ver en la carpeta views, es donde pondremos las vistas que tendra nuestra app.
+
+Para instalar un motor de plantillas, osea que podemos poner el que queramos. Instalariamos el motor que queramos y luego lo cambiamos.
+
+  npm i jade;
+
+Donde esta eso: en app.js:
+
+  app.set('view engine', 'ejs');
+
+Por ejemplo:
+  app.set('view engine', 'jade');
+
+Ahora vamos a ver las vistas que tenemos instalada, en nuestro caso ejs.
+________________________________________________________________
+Ahora ya sabemos que debemos buscar para aprender, curso de EJS.
+----------------------------------------------------------------
+Para este curso usaremos eje, el cual añade su funcionalidad sobre HTML estandar.
+Esto puede hacer que nos sea mas facil depurar errores o integrar y mantener una maquetacion realizada por un maquetador especializado.
+
+Para proporcionar variables a las vistas tenemos 3 opciones:
+- Pasando un objeto al metodo render: Como lo vemos en nuestro archivo app.js
+router.get('/', function (req, res, next) {
+  // Metodo que recibe la vista y un objeto de variables:
+  res.render('index', { title: 'Express', profesion: 'Ingeniero' });
+});
+
+- Usando el objeto global locals: Aqui podriamos colocar variables globales para todas las vistas de la aplicacion.
+app.locals.titulo = 'Anuncios';
+res.render('index);
+
+Esto lo tendriamos que ver mejor, porque no me queda muy claro.
+Para eso tenemos un ejemplo:
+Vemos la varaible global en app.js:
+app.locals.title = 'NodeAPI';
+
+router.get('/', function (req, res, next) {
+  // Metodo que recibe la vista y un objeto de variables:
+  // quitamos el titulo para usar variable global:
+  // res.render('index', { titulo: 'Express', profesion: 'Ingeniero' });
+  res.render('index', { profesion: 'Ingeniero' });
+});
+
+El objeto que pasamos de variables {} es locals.
+
+- Tambien vemos ahora el ejemplo de variable dentro del middeware: Como escapar valores: Para evitar inyeccion de codigo:
+
+router.get('/', function (req, res, next) {
+  // Aqui vemos como poner una variable global pero dentro del middeware que usara la vista:
+  res.locals.valor = '<script>alert("inyeccion de codigo")</script>';
+  // Metodo que recibe la vista y un objeto de variables:
+  // quitamos el titulo para usar variable global:
+  // res.render('index', { titulo: 'Express', profesion: 'Ingeniero' });
+  res.render('index', { profesion: 'Ingeniero' });
+});
+
+Escapar valores, vemos que no se ejecuta ya que ejs protege al cliente ante una inyeccion de codigo: Proteccion de todos los motores de plantillas. Para quitarle esa proteccion quitamos el = y ponemos - vemos como se ejecuta.
+
+  <p>
+    <%- valor %>
+  </p>
+
+Eso de escapar valores, estaria bien para valores nuestros. Pero si de es de un usuario mejor evitarlo.
+NOTA: en las pantillas solo meter codigo html y css todo lo que queramos el codigo js hacerlo en archivos .js
+
+Vemos los ejemplos de como mostrar un condicional, iterar un objeto en nuestro archivo index.js y el template de vistas index.ejs
+_____________________
+CAMBIO DE EJS A HTML:
+---------------------
+Ahora hemos visto como trabajar con un motor de plantillas usando ejs. Eso esta muy bien ahora lo que haremos es cambiar la extension .ejs por .html.
+
+Modificamos en app.js:
+app.set('view engine', 'html');
+app.engine('html', require('ejs').__express);
+
+Ahora ya con eso podemos cambiar la extensiones de las vistas a .html
+
+Ya esta con esto cambiamos las vistas.
+______________________________________________________
+Paramos en nodeAPI y pasamos a hablar de las promesas.
+Lo vemos en practica/promise.js
+Ahora vemos tambien async/await:
+Lo tenemos en practica/async_await.js
+------------------------------------------------------
+_________________
+-- Base de datos:
+-----------------
+Para usar BD en nodeJS es bastante sencillo y basta con instalar un driver.
+Node.js, a través de módulos de terceros, se puede conectar casi con cualquier base de datos del mercado.
+Basta con cargar el driver (módulo) adecuado y establecer la conexión.
+Vamos a ver los dos que vamos a utilizar: mysql y mongodb:
+
+  npm install mysql
+
+  npm install mongoskin
+
+Vamos a hacer uno con mysql: Lo vemos en la carpeta:
+  mysql/index.js
+
+Creamos nuestro package.json con:
+  npm init -y
+

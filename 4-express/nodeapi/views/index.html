@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <!-- Las variables las renderizamos dentro de <% %> usando el motor de vistas ejs -->
+  <title>
+    <%= title %>
+  </title>
+</head>
+<body>
+  <h1>
+    <%= title %>
+  </h1>
+  <p>Welcome to <%= title %>
+  </p>
+  <p>Su profesion es <%= profesion %>
+  </p>
+  <h2>
+    Escapar valores, vemos que no se ejecuta ya que ejs protege al cliente
+    ante una inyeccion de codigo: Proteccion de todos los motores de
+    plantillas. Para quitarle esa proteccion quitamos el = y ponemos - vemos
+    como se ejecuta:
+  </h2>
+  <p>
+    <%= valor %>
+      <!-- <%- valor %> -->
+  </p>
+
+  <h2>Condicionales</h2>
+  <% if(condicion.estado) { %>
+    <p>
+      <%= condicion.segundo %> es par <% } else {%>
+          <%= condicion.segundo %> es impar <% } %>
+    </p>
+    <h2>Rendirizamos con un bucle</h2>
+    <p>
+      <% users.forEach( user=> { %>
+        <p>
+          <%= user.name %> tiene <%= user.age %> años.
+        </p>
+        <%}) %>
+    </p>
+</body>
+</html>
