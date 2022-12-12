@@ -1,0 +1,266 @@
+_________________
+-- Base de datos:
+-----------------
+Nos quedamos en el video anterior viendo el tema de las bd, vimos la instalacion de sql.
+Tenemos una web para practicar las consultas SQL:
+https://www.sqlteaching.com/
+
+En cuanto a usar BD desde codigo habitualmente se suele usar unas librerias que se suelen llamar ORM, Object Realtional Mapping.
+
+Un ORM (Object Relational Mapping) se encarga principalmente de:
+• Convertir objetos en consultas SQL para que puedan ser persistidos en una base de datos relacional.
+• Traducir los resultados de una consulta SQL y generar objetos. Esto nos resultará util si el diseño de nuestra aplicación es orientado a objetos (OOP).
+
+Un ORM muy usado para bases de datos SQL es sequelize:
+
+http://docs.sequelizejs.com/en/latest/
+
+Sequelize tiene soporte para MySQL, MariaDB, SQLite, PostgreSQL y MSSQL.
+
+Otras buenas alternativas son Knex y Bookshelf.
+https://knexjs.org/
+https://bookshelfjs.org/
+
+Ahora vamos a poner el foco con mongodb:
+Es un bd no relacional, sin esquemas. Una bd noSQL.
+
+OJO: Esto ya ha ido cambiando, con el tiempo a ido mejorando y mucho anexando estas carencias:
+MongoDB en una base de datos no relacional sin esquemas, esto significa principalmente que:
+• No tenemos JOIN, tendremos que hacerlo nosotros.
+• Cada registro podría tener una estructura distinta.
+• Mínimo soporte a transacciones.
+A la hora de decidir que base de datos usar para una aplicación debemos pensar como vamos a organizar los datos para saber si nos conviene usar una base de datos relacional o no relacional.
+
+Las tablas aqui se suelen llamar colecciones.
+
+Usar una base de datos como MongoDB puede darnos más rendimiento principalmente por alguna de estas razones:
+- No tiene que gestionar transacciones
+- No tiene que gestionar relaciones
+- No es necesario convertir objetos a tablas y tablas a objetos (Object-
+relation Impedance Mismatch).
+
+Vamos a ver como instalar mongobd:
+
+npm install mongodb
+
+const { MongoClient } = require('mongodb');
+
+MongoClient.connect('mongodb://localhost', function(err, client) {
+  if (err) throw err;
+  const db = client.db('cursonode');
+  db.collection('agentes').find({}).toArray(function(err, docs) {
+    if (err) throw err;
+    console.dir(docs);
+    client.close();
+  });
+});
+
+Vamos a instalarnos mongodb en nuestro pc:
+https://www.mongodb.com/home
+
+- Con windows se descarga un instalador. siguiente, siguiente, lo deja instalado y arrancado.
+
+https://www.mongodb.com/try/download/community
+
+Vemos que se nos instala.
+Se instala mongoDB y MongoBD compas, el cual es un editor grafico para la bd.
+
+Ahora debemos bajar el shell para poder ejecutar por consola mongodb:
+https://www.mongodb.com/try/download/shell
+
+Lo bajamos y descomprimimos y lo colocamos en la unidad C:
+Tambien nos creamo en C: una carpeta data/db
+
+Ahora vamos a agregar al path ambos, tanto la instalacion de mongo comunity como la shell antes descargada:
+C:\Program Files\MongoDB\Server\6.0\bin
+C:\mongosh-1.6.1\bin
+
+Vamos a donde estan las variable de entorno:
+sobre este equipo: derecho de raton/propiedades
+configuracion avanzada del sistema
+varaibles de entorno
+seleccionar path y darle doble click
+nuevo
+pegar la direccion
+acceptar a todo.
+abrimos terminal y mongod --version
+
+Comprobamos con la terminal si esta bien instalado:
+
+mongod --version
+
+Deberia arrojarnos esto:
+
+$ mongod --version
+db version v6.0.3
+Build Info: {
+    "version": "6.0.3",
+    "gitVersion": "f803681c3ae19817d31958965850193de067c516",
+    "modules": [],
+    "allocator": "tcmalloc",
+    "environment": {
+        "distmod": "windows",
+        "distarch": "x86_64",
+        "target_arch": "x86_64"
+    }
+}
+
+Ahora para arrancar por la terminal el cliente de mongodb usaremos:
+
+mongosh
+
+Y vemos como se arranca por una consola.
+
+Tenemos otro cliente grafico para trabajar con mongodb tenemos robo 3t.
+https://robomongo.org/
+
+NOTAS:
+mongod arranca el motor de la BD,
+mongosh para operar con la bd, vamos un shell.
+Tambie podemos operar por mongo atlas que se instala. Tiene un shell abajo.
+
+Vamos a crear una bd:
+use cursonode
+
+db.agentes.insert({ name: 'Smith', age: 41})
+
+El anterior comando esta deprecado. Mejor usar el siguiente.
+
+db.agentes.insertOne({name: 'Alfred', age:47})
+
+Tambien podemos usar compas. El editor grafico.
+
+Para ver el contenido de ls bd:
+db.agentes.find()
+
+[
+  { _id: ObjectId("639703d44dbc512d8d318033"), name: 'Smith', age: 41 },
+  { _id: ObjectId("639705604dbc512d8d318034"), name: 'Alfred', age: 47 }
+]
+
+Vamos a crear algunos mas:
+db.agentes.insertOne({name: 'Brown', age:24})
+db.agentes.insertOne({name: 'Jones', age:32})
+
+Insertamos otro y veremos que es diferente ya que este añade mas informacion y da igual lo agrega sin importar los anteriores. Cada documento tiene un esquema distinto y mongodb lo permite:
+db.agentes.insertOne({name: 'SuperLopez', age:36, address:{ street:'Calle Pez', city: 'Madrid'}, phone: ['699887766', '912619145']})
+
+Ahora tenemos para verlo mas bonito:
+db.agentes.find().pretty()
+
+Tambien podemos buscar por un valor:
+db.agentes.find({name: 'Smith'}).pretty()
+db.agentes.find({age: 32}).pretty()
+
+---NOTA:--- Al busca en la app para filtrar por algun criterio debemos crear un 'indice', esto lo tenemos que averiguar en mongobd se hace. Ya que cuando tenemos muchos documentos la busqueda se hace lenta. Sobre todo con muchos.
+
+Vamos a ver como se crea un indice: Dependera de nuestra busqueda que hagamos en la bd: Crearemos indices en funcion de lo que necesites no crear indices por crearlos.
+Vamos a filtrar por edad:
+
+1-> ascendente
+-1-> descentes
+db.agentes.createIndex({ age:1 })
+
+Combinado, no tenemos cp pero si lo tuvieramos:
+db.agentes.createIndex({ age:1 cp:-1})
+
+Asi vemos los indices que hay:
+db.agentes.getIndexes()
+
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { age: 1 }, name: 'age_1' }
+]
+
+Vamos ahora a modificar un documento ya creado:
+Lo haremos usando el ObjectId:
+
+"_id": "639709e047550a4f9d1cc1e1"
+
+// OJO Asi se actualiza todo!!!!!
+db.agentes.updateOne({ _id: ObjectId("639709e047550a4f9d1cc1e1")}, { age: 25 })
+
+// Asi solo afectamos a esa propiedad: $set{}
+db.agentes.updateOne({ _id: ObjectId("639709e047550a4f9d1cc1e1")}, {$set: {age: 25} })
+
+Para ver lo que hara en una busqueda mondobd podemos usar:
+db.agentes.find({age:32}).explain()
+
+Si vemos esta propiedad es que esta bien porque hace busqueda por indice:
+stage: 'IXSCAN',
+
+db.agentes.find({name:'Jones'}).explain()
+stage: 'COLLSCAN'
+
+Este no tiene un indice asignado. Recorre toda la coleccion, y esto relentiza la bd.
+
+Hay que ver en el pdf anexo las query que podemos hacer.
+
+db.agentes.find({ age: { $gt: 30, $lt: 40 } });
+
+Ahora vamos a hacer una busqueda en subdocumentos como vemos en superlopez:
+db.agentes.find({'address.city':'Madrid'})
+db.agentes.find({phone: '912619145'})
+
+Devuelve de mayor al menor:
+db.agentes.find().sort({age:-1})
+Devuelve la cantidad de documentos:
+db.agentes.find().count()
+
+Recomendacion para formarnos en mondodb:
+https://learn.mongodb.com/
+
+Podemos ver mas comandos en el pdf que tenemos en docs. Revisar.
+Las peticiones de tipo .find() Devuelve un [].
+____________
+-- mongoose: NodeAPI:
+------------
+https://mongoosejs.com/ Esta web esta muy bien para ver como implementar mongoose.
+es una herramienta que nos permite persistir objetos en MongoDB, recuperarlos y mantener esquemas de estos fácilmente.
+Este tipo de herramientas suelen denominarse ODM (Object Document Mapper).
+
+Vamos a trabajar con NodeAPI se conecte a la BD que hemos creado.
+Vamos a crear un modulo para hacer la coneccion a la BD.
+
+carpeta lib/connectMongoose.js
+
+  npm install mongoose
+
+Ya tenemos el modulo hecho y ahora hay que cargarlo donde carga la aplicacion, en app.js
+Una ves realizado esto vemos como nos conectamos a las app, he tenido que hacer unas varaiciones porque no me conectaba, el profesor usa localhost y asi fallaba tuve que usar 127.0.0.0 con el puerto y ademas hay uno warning de cosas deprecadas tuve que buscar por itnernet y los he quitado me queda asi:
+
+mongoose.set('strictQuery', false);
+mongoose.connect('mongodb://127.0.0.1:27017/cursonode', { useNewUrlParser: true });
+
+Una vez solucionado esto vamos a crear un modelo.
+Usamos mongoose tambien. Lo vemos en el pdf:
+
+Lo crearemos en su propia carpeta:
+models/Agentes.js
+Esto es como sifuera la tabla en mysql. Ahi ponemos las restricciones.
+
+Con el schema mongoose hara de policia para los datos que van a entrar a la coleccion de agente, osea cons eso le decimos de que tipo seran los datos que ira a la bd.
+
+Esta Pagina esta genial para definir los esquemas: https://mongoosejs.com/docs/schematypes.html
+____________________________
+-- Metodos mios de consulta:
+----------------------------
+Ahora vamos a hacer nuestro primer metodo para hacer la consulta a la API:
+
+Vamos a router y nos creamos una nueva carpeta:
+
+  apiv1/agente.js
+
+Lo llamamos asi apiv1 api version 1. versionamos desde el principio.
+Lo correcto es usar git, pero lo haremos de esta forma de carpetas.
+
+Creamos nuestro primer route y lo exportamos y lo consuminos en app.js
+
+Aprovechamos y en el readme.md vamos creando la documentacion de la API. Recomendacion ir documentando a medida que los vamos creando.
+
+Recuerda para arrancar la app:
+
+BD: consola
+mongod -> enter
+
+Abrimos mongo atlas y vemos que estamos conectado.
