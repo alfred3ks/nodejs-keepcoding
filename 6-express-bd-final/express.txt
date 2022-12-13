@@ -1,0 +1,62 @@
+Empezamos la sesion 6 final del curso.
+Arrancamos mongodb de nuestra app: Tenemos una copia igual que la version en sesion 5.
+
+mongod -> enter
+Abrimos atlas. Y vemos que esto todo bien.
+
+Luego arrancamos la aplicacion:
+
+npm run nodemon
+
+Hoy vamos a ver que el manejador de errores muestre si el fallo es del api o de la vista.
+Una cosa que debemos tener claro que:
+localhost:3000 sirve una vista,
+http://localhost:3000/apiv1/agentes la sirve una api.
+
+Debemos hacer para la practica una vista que consuma de la api.
+Las vistas y la API comparten el modelo.
+
+Nos quedamos con el metodo para peticiones get con este endpoint: http://localhost:3000/apiv1/agentes
+El modelo busca en la bd y los devuelve.
+
+Aqui vemos los modelos en: models/Agentes.js
+
+El controlador en: routes/apiv1/agentes.js
+
+Consejo llevar el codigo que hace cosa a los modelos porque lo puedo reutilizar. Minimo codigo en las vistas.
+
+Lo que vamos a ver ahora es como hacer limitaciones en la peticiones query:
+Vamos a trabajar en nuestra api: routes/apiv1/agentes.js lo haremos sobre la funcion que hace peticiones a la bd:
+
+Lo que haremos es modificar nuestro manejador de errores para que los errores tambien los devuelva en un json:
+
+vamos app.js y cambiamos cosas en el middeware de errores. Haremos que este middeware detecte si es una peticion de la API.
+
+Seguimos haciendo peticiones a la bd en nuestro controlador agentes.js: y tambien usando el modelo Agente.js.
+
+Tambien tenemos los metodos de creacion de agentes, actualizacion y borrado.
+Los tenemos en agente.js el controlador.
+
+Queda operativa la api con esas funcionalidades faltaria hacer que la vista pinte igual como lo hace la api pero que lo haga la vista.
+_____________________________
+-- Consumir APIs de terceros:
+-----------------------------
+Podemos usar peticiones a otras apis desde el backend, por ejemplo a la apis de google, a la facebook o twitter.
+
+Tenemos la libreria axios.
+https://axios-http.com/es/docs/intro
+
+https://github.com/axios/axios
+
+Instalamos la libreria:
+
+  npm i axios
+
+Vemos un ejemplo:
+practica/ejemplo_request_axios/index.js
+
+Fin...
+
+A lo que se refiere en la practica de crearnos un script que arranque con unos datos la BD lo vemos algo parecido con script-arranque-bd.
+
+

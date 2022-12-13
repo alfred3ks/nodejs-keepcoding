@@ -36,7 +36,7 @@ route.get('/', async (req, res, next) => {
     res.json({ success: true, agentes: agentes });
   } catch (error) {
     next(error);
-    return;
+    // return;
   }
 });
 

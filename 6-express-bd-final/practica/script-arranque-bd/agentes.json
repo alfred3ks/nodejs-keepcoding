@@ -1,0 +1,39 @@
+{
+    "success": true,
+    "results": [
+        {
+            "_id": "63973e9625391344d9a37321",
+            "name": "Smith",
+            "age": 41
+        },
+        {
+            "_id": "63973eb525391344d9a37322",
+            "name": "Alfred3ks",
+            "age": 45,
+            "nationality": "España"
+        },
+        {
+            "_id": "63973ec625391344d9a37323",
+            "name": "Brown",
+            "age": 24
+        },
+        {
+            "_id": "63973ec725391344d9a37324",
+            "name": "Jones",
+            "age": 32
+        },
+        {
+            "_id": "63978a3fe8b67b225fc6fdf2",
+            "name": "SuperLopez",
+            "age": 36,
+            "address": {
+                "street": "Calle Pez",
+                "city": "Madrid"
+            },
+            "phone": [
+                "699887766",
+                "912619145"
+            ]
+        }
+    ]
+}
